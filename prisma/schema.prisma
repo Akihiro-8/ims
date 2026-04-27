@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+
+  studentProfile    StudentProfile?
+  companyProfile    CompanyProfile?
+  supervisorProfile SupervisorProfile?
+}
+
+enum Role {
+  student
+  company
+  admin
+  supervisor
+}
+
+model StudentProfile {
+  id       Int  @id @default(autoincrement())
+  userId   Int  @unique
+  user     User @relation(fields: [userId], references: [id])
+
+  phone      String?
+  department String?
+  major      String?
+  year       Int?
+
+  applications Application[]
+}
+
+model CompanyProfile {
+  id       Int  @id @default(autoincrement())
+  userId   Int  @unique
+  user     User @relation(fields: [userId], references: [id])
+
+  companyName  String
+  industry     String?
+  location     String?
+  phone        String?
+  contactPerson String?
+
+  internships InternshipOpportunity[]
+}
+
+model SupervisorProfile {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+  department String?
+
+  evaluations Evaluation[]
+}
+
+model InternshipOpportunity {
+  id        Int  @id @default(autoincrement())
+  companyId Int
+  company   CompanyProfile @relation(fields: [companyId], references: [id])
+
+  title        String
+  description  String?
+  requirements String?
+  startDate    DateTime?
+  endDate      DateTime?
+  availableSlots Int
+
+  applications Application[]
+}
+
+model Application {
+  id           Int  @id @default(autoincrement())
+  studentId    Int
+  internshipId Int
+
+  student    StudentProfile @relation(fields: [studentId], references: [id])
+  internship InternshipOpportunity @relation(fields: [internshipId], references: [id])
+
+  applicationDate DateTime @default(now())
+  status          ApplicationStatus
+  resumeFile      String?
+
+  record InternshipRecord?
+}
+
+enum ApplicationStatus {
+  pending
+  approved
+  rejected
+}
+
+
+model InternshipReport {
+  id       Int @id @default(autoincrement())
+  recordId Int @unique
+
+  record InternshipRecord @relation(fields: [recordId], references: [id])
+
+  reportFile     String?
+  submissionDate DateTime @default(now())
+}
+
+
+model InternshipRecord {
+  id            Int @id @default(autoincrement())
+  applicationId Int @unique
+
+  application Application @relation(fields: [applicationId], references: [id])
+
+  startDate      DateTime?
+  endDate        DateTime?
+  progressStatus ProgressStatus
+
+  evaluations Evaluation[]
+  report      InternshipReport?
+}
+
+enum ProgressStatus {
+  awaiting_join
+  ongoing
+  completed
+  terminated
+}
+
+model Evaluation {
+  id           Int @id @default(autoincrement())
+  recordId     Int
+  supervisorId Int
+
+  record     InternshipRecord @relation(fields: [recordId], references: [id])
+  supervisor SupervisorProfile @relation(fields: [supervisorId], references: [id])
+
+  score Int
+  feedback String?
+  evaluationDate DateTime @default(now())
+}
