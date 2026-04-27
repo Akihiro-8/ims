@@ -2,8 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
-Create a database with internship_managemnet
+First, create a database with internship_managemnet
 
 ```run
 npx prisma migrate dev
