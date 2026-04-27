@@ -5,6 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, create a database named "internship_managemnet" and run
 
 ```run
+npm install --save-dev prisma dotenv
 npx prisma migrate dev
 ```
 That will setup required tables.
