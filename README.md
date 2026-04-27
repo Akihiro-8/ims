@@ -3,15 +3,17 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 First, run the development server:
+Create a database with internship_managemnet
 
-```bash
+```run
+npx prisma migrate dev
+```
+That will setup required tables.
+Make sure to set your root password to "mysql" or if not change password in DATABASE_URL in ".env" file.
+
+
+```run
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
